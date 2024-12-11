@@ -1,19 +1,15 @@
-name: Pipeline using Docker cloud services
-
+name: Metadata test
 on:
   push:
 
 jobs:
   build:
-    name: Build and push image
+    name: Determine tags to use
     runs-on: ubuntu-latest
     outputs:
       IMAGE_TAGS: ${{ toJSON( fromJSON(steps.meta.outputs.json).tags ) }}
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
       - name: Determine image tags and labels
         id: meta
         uses: docker/metadata-action@v5
