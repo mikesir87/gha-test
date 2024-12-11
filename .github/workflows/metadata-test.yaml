@@ -27,4 +27,4 @@ jobs:
         run: |
           echo $TAG_CONFIGURATION
         env:
-          TAG_CONFIGURATION: steps.meta.outputs.json
+          TAG_CONFIGURATION: ${{steps.meta.outputs.json}}
