@@ -43,4 +43,4 @@ jobs:
           echo "BRANCH TAG: ${BRANCH_TAG}"
         env:
           FULL_TAG_LIST: ${{ needs.build.outputs.IMAGE_TAGS }}
-          BRANCH_TAG: ${{ fromJSON( needs.build.outputs.IMAGE_TAGS[1] ) }}
+          BRANCH_TAG: ${{ fromJSON( needs.build.outputs.IMAGE_TAGS )[1] }}
