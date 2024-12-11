@@ -1,0 +1,30 @@
+name: Pipeline using Docker cloud services
+
+on:
+  push:
+
+jobs:
+  build:
+    name: Build and push image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Determine image tags and labels
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: mikesir87/gha-demo
+          tags: |
+            type=ref,enable=true,event=branch,suffix=--latest
+            type=ref,enable=true,event=branch,suffix=--{{sha}}
+            type=ref,event=tag
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Output config
+        run: |
+          echo $TAG_CONFIGURATION
+        env:
+          TAG_CONFIGURATION: steps.meta.outputs.json
