@@ -13,6 +13,20 @@ jobs:
       IMAGE_TAGS: ${{ toJSON( fromJSON(steps.meta.outputs.json).tags ) }}
 
     steps:
+      - name: Set up containerd
+        uses: docker/setup-docker-action@v4
+        with:
+          set-host: true
+          daemon-config: |
+            {
+              "features": {
+                "containerd-snapshotter": true
+              }
+            }
+            
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+    
       - name: Determine image tags and labels
         id: meta
         uses: docker/metadata-action@v5
@@ -29,6 +43,18 @@ jobs:
           echo $TAG_CONFIGURATION
         env:
           TAG_CONFIGURATION: ${{steps.meta.outputs.json}}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          provenance: mode=max
+          sbom: true
+          push: false
+          load: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
 
   record-tag:
     name: Record tag
